@@ -20,7 +20,11 @@ self.addEventListener('push', function (event) {
   const options = {
     body: data.body,
     icon: '/images/icon.png',
-    badge: '/images/badge.png'
+    badge: '/images/badge.png',
+    actions: [
+      { action: 'like', title: '👍' },
+      { action: 'dislike', title: '👎' }
+    ]
   };
 
   event.waitUntil(self.registration.showNotification(data.title, options));
@@ -28,9 +32,9 @@ self.addEventListener('push', function (event) {
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
-  console.log(event)
-
-  event.waitUntil(clients.openWindow('http://localhost:5000'));
+  
+  const action = event.action === 'like' ? '❤️' : '😭';
+  event.waitUntil(clients.openWindow(`http://localhost:5000?action=${action}`));
 });
 
 self.addEventListener('pushsubscriptionchange', function (event) {
